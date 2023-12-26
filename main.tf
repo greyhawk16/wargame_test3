@@ -17,7 +17,30 @@ provider "aws" {
   region = "us-west-2"
 }
 
-# STS 관련 role 생성
+# role 생성
+resource "aws_iam_role" "test_role" {
+  name               = "joonhun_SSTI_STS_role-TF2"
+  path               = "/"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+}
+
+
+# STS 관련 policy 생성
 resource "aws_iam_role_policy" "hello_sts" {
   name   = "joonhun_SSTI_STS-TF2"
   role   = aws_iam_role.test_role.id
@@ -49,9 +72,9 @@ resource "aws_iam_role_policy" "hello_sts" {
 EOF
 }
 
-# iamReadOnly 정책 생성성
+# iamReadOnly 정책 생성
 resource "aws_iam_role_policy" "iamReadOnly" {
-  name   = "joonhun_IAMReadOnly-TF1"
+  name   = "joonhun_IAMReadOnly-TF2"
   role   = aws_iam_role.test_role.id
   policy = <<EOF
 {
