@@ -39,7 +39,7 @@ EOF
 
 }
 
-# STS 작업 허용용
+# STS 작업 허용 목적
 resource "aws_iam_role_policy" "hello_sts" {
   name   = "joonhun_SSTI_STS-TF2"
   role   = aws_iam_role.test_role.id
