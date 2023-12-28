@@ -1,18 +1,4 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-}
-
-
-provider "aws" {
-  region = "us-east-1"
-}
-
-# role 생성
+# EC2 role 생성
 resource "aws_iam_role" "test_role" {
   name               = "joonhun_SSTI_STS_role-TF8"
   path               = "/"
@@ -90,95 +76,6 @@ resource "aws_iam_role_policy" "iamReadOnly" {
 EOF
 }
 
-# 공격자가 취득해야 하는 role
-resource "aws_iam_role" "secret_role" {
-  name               = "joonhun_SSTI_secret_role-TF8"
-  path               = "/"
-  assume_role_policy = <<EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "",
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  }
-  EOF
-}
-
-# SSTI_secret_role에 붙일 policy
-resource "aws_iam_role_policy" "secretsmanager_policy" {
-  name   = "joonhun_SSTI_secretsmanager_policy-TF8"
-  role   = aws_iam_role.secret_role.id
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "secretsmanager:*",
-                "cloudformation:CreateChangeSet",
-                "cloudformation:DescribeChangeSet",
-                "cloudformation:DescribeStackResource",
-                "cloudformation:DescribeStacks",
-                "cloudformation:ExecuteChangeSet",
-                "docdb-elastic:GetCluster",
-                "docdb-elastic:ListClusters",
-                "ec2:DescribeSecurityGroups",
-                "ec2:DescribeSubnets",
-                "ec2:DescribeVpcs",
-                "kms:DescribeKey",
-                "kms:ListAliases",
-                "kms:ListKeys",
-                "lambda:ListFunctions",
-                "rds:DescribeDBClusters",
-                "rds:DescribeDBInstances",
-                "redshift:DescribeClusters",
-                "tag:GetResources"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "lambda:AddPermission",
-                "lambda:CreateFunction",
-                "lambda:GetFunction",
-                "lambda:InvokeFunction",
-                "lambda:UpdateFunctionConfiguration"
-            ],
-            "Resource": "arn:aws:lambda:*:*:function:SecretsManager*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "serverlessrepo:CreateCloudFormationChangeSet",
-                "serverlessrepo:GetApplication"
-            ],
-            "Resource": "arn:aws:serverlessrepo:*:*:applications/SecretsManager*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::awsserverlessrepo-changesets*",
-                "arn:aws:s3:::secrets-manager-rotation-apps-*/*"
-            ]
-        }
-    ]
-}
-EOF
-}
-
-
 
 # EC2 인스턴스 프로필 생성
 resource "aws_iam_instance_profile" "joonhun_EC2_profile-TF8" {
@@ -248,7 +145,6 @@ resource "aws_instance" "app_server" {
         sudo yum install git -y
         sudo yum install pip -y
         sudo yum install nc -y
-        git clone https://github.com/greyhawk16/wargame_test3.git
         EOF
   
   tags = {
@@ -257,6 +153,8 @@ resource "aws_instance" "app_server" {
   root_block_device {
     volume_size         = 30 
   }
+
+  
 }
 
 # EIP
