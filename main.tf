@@ -159,7 +159,7 @@ resource "aws_instance" "app_server" {
         sudo yum update
         sudo yum install git -y
         sudo yum install pip -y
-        git clone https://github.com/greyhawk16/wargame_test3.git
+        sudo yum install nc -y
         EOF
   
   tags = {
