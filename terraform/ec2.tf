@@ -164,6 +164,8 @@ resource "aws_instance" "app_server" {
         sudo yum install pip -y
         sudo yum install nc -y
         pip3 install flask
+        cd ./code
+        sudo python3 ./app.py
         UD
 }
 
