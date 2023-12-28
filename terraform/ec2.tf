@@ -138,14 +138,6 @@ resource "aws_instance" "app_server" {
   key_name = "${aws_key_pair.this.key_name}"
   vpc_security_group_ids = ["${aws_security_group.alone_web.id}"] # ["sg-0f1333e985b024d83"]
   iam_instance_profile = "${aws_iam_instance_profile.joonhun_EC2_profile-TF8.name}"
-
-  user_data = <<-EOF
-        #!/bin/bash
-        sudo yum update
-        sudo yum install git -y
-        sudo yum install pip -y
-        sudo yum install nc -y
-        EOF
   
   tags = {
     Name = "joonhun_ExampleAppServerInstance-TF8"
@@ -153,8 +145,26 @@ resource "aws_instance" "app_server" {
   root_block_device {
     volume_size         = 30 
   }
+  provisioner "file" {
+      source = "../code"
+      destination = "/home/ec2-user/code"
+      connection {
+        type = "ssh"
+        user = "ec2-user"
+        host = self.public_ip
+        private_key = "${file(var.ssh-private-key-for-ec2)}"
+      }
+  }
 
-  
+
+  user_data = <<-UD
+        #!/bin/bash
+        sudo yum update
+        sudo yum install git -y
+        sudo yum install pip -y
+        sudo yum install nc -y
+        pip3 install flask
+        UD
 }
 
 # EIP
