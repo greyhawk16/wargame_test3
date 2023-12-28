@@ -153,6 +153,14 @@ resource "aws_instance" "app_server" {
   key_name = "${aws_key_pair.this.key_name}"
   vpc_security_group_ids = ["${aws_security_group.alone_web.id}"] # ["sg-0f1333e985b024d83"]
   iam_instance_profile = "${aws_iam_instance_profile.joonhun_EC2_profile-TF7.name}"
+
+  user_data = <<-EOF
+        #!/bin/bash
+        sudo yum update
+        sudo yum install git -y
+        sudo yum install pip -y
+        git clone https://github.com/greyhawk16/wargame_test3.git
+        EOF
   
   tags = {
     Name = "joonhun_ExampleAppServerInstance-TF7"
