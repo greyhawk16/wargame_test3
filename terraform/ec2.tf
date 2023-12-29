@@ -95,17 +95,18 @@ resource "aws_instance" "app_server" {
   root_block_device {
     volume_size         = 30 
   }
-  provisioner "file" {
-      source = "../code"
-      destination = "/home/ec2-user/code"
-      connection {
+
+  connection {
         type = "ssh"
         user = "ec2-user"
         host = self.public_ip
         private_key = "${file(var.ssh-private-key-for-ec2)}"
-      }
   }
 
+  provisioner "file" {
+      source = "../code"
+      destination = "/home/ec2-user/code"
+  }
 
   user_data = <<-UD
         #!/bin/bash
@@ -114,10 +115,20 @@ resource "aws_instance" "app_server" {
         sudo yum install pip -y
         sudo yum install nc -y
         pip3 install flask
-        cd ./code
-        sudo python3 ./app.py
         UD
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo amazon-linux-extras enable nginx1.12",
+      "sudo yum -y install nginx",
+      "sudo systemctl start nginx",
+      "python3 ./code/app.py"
+    ]
+  }
 }
+
+
+
 
 # EIP
 resource "aws_eip" "elasticip" {
