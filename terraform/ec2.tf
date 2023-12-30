@@ -1,6 +1,6 @@
 # EC2 role 생성
 resource "aws_iam_role" "test_role" {
-  name               = "joonhun_SSTI_STS_role-TF8"
+  name               = "SSTI_role"
   path               = "/"
   assume_role_policy = <<EOF
   {
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "iamReadOnly" {
 
 # EC2 인스턴스 프로필 생성
 resource "aws_iam_instance_profile" "joonhun_EC2_profile-TF8" {
-  name = "joonhun_EC2_profile-TF8"
+  name = "SSTI_EC2_profile"
   role = "${aws_iam_role.test_role.name}"
 }
 
@@ -41,12 +41,12 @@ resource "tls_private_key" "this" {
 }
 
 resource "aws_key_pair" "this" {
-  key_name      = "joonhun_SSTI_key_TF8"
+  key_name      = "SSTI_key"
   public_key    = tls_private_key.this.public_key_openssh
 
   provisioner "local-exec" {
     command = <<-EOT
-      echo "${tls_private_key.this.private_key_pem}" > joonhun_SSTI_key_TF8.pem
+      echo "${tls_private_key.this.private_key_pem}" > SSTI_key.pem
     EOT
   }
 }
@@ -90,7 +90,7 @@ resource "aws_instance" "app_server" {
   iam_instance_profile = "${aws_iam_instance_profile.joonhun_EC2_profile-TF8.name}"
   
   tags = {
-    Name = "joonhun_ExampleAppServerInstance-TF8"
+    Name = "SSTI_app_server"
   }
   root_block_device {
     volume_size         = 30 
@@ -108,23 +108,25 @@ resource "aws_instance" "app_server" {
       destination = "/home/ec2-user/code"
   }
 
-  user_data = <<-UD
-        #!/bin/bash
-        sudo yum update
-        sudo yum install git -y
-        sudo yum install pip -y
-        sudo yum install nc -y
-        pip3 install flask
-        UD
 
   provisioner "remote-exec" {
     inline = [
+      #!/bin/bash
+      "sudo yum update",
+      "sudo yum install git -y",
+      "sudo yum install pip -y",
+      "sudo yum install nc -y",
+      "pip3 install flask",
       "sudo amazon-linux-extras enable nginx1.12",
       "sudo yum -y install nginx",
       "sudo systemctl start nginx",
       "python3 ./code/app.py"
     ]
   }
+  # user_data = <<-UD
+  #        #!/bin/bash
+  #        python3 ./code/app.py
+  #        UD
 }
 
 

@@ -1,6 +1,6 @@
 # 공격자가 취득해야 하는 role
 resource "aws_iam_role" "secret_role" {
-  name               = "joonhun_SSTI_secret_role-TF8"
+  name               = "SSTI_secret_role"
   path               = "/"
   assume_role_policy = <<EOF
   {
