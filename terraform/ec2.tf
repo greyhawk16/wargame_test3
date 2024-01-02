@@ -108,7 +108,12 @@ resource "aws_instance" "app_server" {
       destination = "/home/ec2-user/code"
   }
 
-
+  # Write ID of created EC2 instace to "data.txt"
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "${aws_instance.app_server.id}" > instance_id.txt
+    EOT
+  }
   
   provisioner "remote-exec" {
     inline = [
@@ -126,21 +131,12 @@ resource "aws_instance" "app_server" {
   }
 
   # user_data: can't execute bash commands
-  # user_data = <<-UD
-  #        #!/bin/bash
-  #        sudo systemctl start nginx
-  #        python3 ./code/app.py
-  #        UD
-
-  # Write ID of created EC2 instace to "data.txt"
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${aws_instance.app_server.id}" > instance_id.txt
-    EOT
-  }
+  user_data = <<-EOF
+         #!/bin/bash
+         sudo systemctl start nginx
+         python3 ./code/app.py
+         EOF
 }
-
-
 
 
 # EIP
