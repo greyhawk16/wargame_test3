@@ -125,8 +125,8 @@ resource "aws_instance" "app_server" {
       "pip3 install flask",
       "sudo amazon-linux-extras enable nginx1.12",
       "sudo yum -y install nginx",
-      # "sudo systemctl start nginx",    # Required for "python3 ./code/app.py" 
-      # "python3 ./code/app.py"          # If executes, Terraform won't END
+      "sudo systemctl start nginx",    # Required for "python3 ./code/app.py" 
+      "python3 ./code/app.py"          # If executes, Terraform won't END
     ]
   }
 
