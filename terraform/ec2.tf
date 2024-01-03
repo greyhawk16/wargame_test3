@@ -108,7 +108,7 @@ resource "aws_instance" "app_server" {
       destination = "/home/ec2-user/code"
   }
 
-  # Write ID of created EC2 instace to "data.txt"
+  # Write ID of created EC2 instace to "instance_id.txt"
   provisioner "local-exec" {
     command = <<-EOT
       echo "${aws_instance.app_server.id}" > instance_id.txt
@@ -125,23 +125,10 @@ resource "aws_instance" "app_server" {
       "sudo amazon-linux-extras enable nginx1.12",
       "sudo yum -y install nginx",
       "sudo systemctl start nginx",
-      "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &"
+      "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &",
+      "sleep 10"   # required to finish nohup
     ]
   }
-
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo systemctl start nginx",
-  #     "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &"
-  #   ]
-  # }
-
-  # user_data: can't execute bash commands
-  # user_data = <<-EOF
-  #        #!/bin/bash
-  #        sudo systemctl start nginx
-  #        python3 ./code/app.py
-  #        EOF
 }
 
 
