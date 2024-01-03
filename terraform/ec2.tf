@@ -123,16 +123,18 @@ resource "aws_instance" "app_server" {
       "sudo yum install nc -y",
       "pip3 install flask",
       "sudo amazon-linux-extras enable nginx1.12",
-      "sudo yum -y install nginx"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
+      "sudo yum -y install nginx",
       "sudo systemctl start nginx",
       "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &"
     ]
   }
+
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo systemctl start nginx",
+  #     "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &"
+  #   ]
+  # }
 
   # user_data: can't execute bash commands
   # user_data = <<-EOF
