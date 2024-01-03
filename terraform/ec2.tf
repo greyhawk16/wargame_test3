@@ -119,23 +119,27 @@ resource "aws_instance" "app_server" {
     inline = [
       #!/bin/bash
       "sudo yum update",
-      "sudo yum install git -y",
       "sudo yum install pip -y",
       "sudo yum install nc -y",
       "pip3 install flask",
       "sudo amazon-linux-extras enable nginx1.12",
-      "sudo yum -y install nginx",
-      "sudo systemctl start nginx",    # Required for "python3 ./code/app.py" 
-      "python3 ./code/app.py"          # If executes, Terraform won't END
+      "sudo yum -y install nginx"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo systemctl start nginx",
+      "nohup python3 code/app.py > /dev/null 2> /dev/null < /dev/null &"
     ]
   }
 
   # user_data: can't execute bash commands
-  user_data = <<-EOF
-         #!/bin/bash
-         sudo systemctl start nginx
-         python3 ./code/app.py
-         EOF
+  # user_data = <<-EOF
+  #        #!/bin/bash
+  #        sudo systemctl start nginx
+  #        python3 ./code/app.py
+  #        EOF
 }
 
 
