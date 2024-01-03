@@ -1,6 +1,6 @@
 # EC2 role 생성
 resource "aws_iam_role" "test_role" {
-  name               = "SSTI_role"
+  name               = "cr-SSTI-role-EC2role"
   path               = "/"
   assume_role_policy = <<EOF
   {
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "iamReadOnly" {
 
 # EC2 인스턴스 프로필 생성
 resource "aws_iam_instance_profile" "joonhun_EC2_profile-TF8" {
-  name = "SSTI_EC2_profile"
+  name = "cr-SSTI-profile-EC2_profile"
   role = "${aws_iam_role.test_role.name}"
 }
 
@@ -41,20 +41,20 @@ resource "tls_private_key" "this" {
 }
 
 resource "aws_key_pair" "this" {
-  key_name      = "SSTI_key"
+  key_name      = "cr-SSTI-key-key_pair"
   public_key    = tls_private_key.this.public_key_openssh
 
   provisioner "local-exec" {
     command = <<-EOT
-      echo "${tls_private_key.this.private_key_pem}" > SSTI_key.pem
+      echo "${tls_private_key.this.private_key_pem}" > cr-SSTI-key-key_pair.pem
     EOT
   }
 }
 
 
 resource "aws_security_group" "alone_web" {
-  name        = "Alone EC2 Security Group"
-  description = "Alone EC2 Security Group"
+  name        = "cr-SSTI-SG-SecurityGroup"
+  description = "cr-SSTI-SG-SecurityGroup"
   ingress {
     from_port = 22                                           
     to_port = 22                                             
@@ -90,7 +90,7 @@ resource "aws_instance" "app_server" {
   iam_instance_profile = "${aws_iam_instance_profile.joonhun_EC2_profile-TF8.name}"
   
   tags = {
-    Name = "SSTI_app_server"
+    Name = "cr-SSTI-app_server-EC2"
   }
   root_block_device {
     volume_size         = 30 

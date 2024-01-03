@@ -1,3 +1,3 @@
 variable "ssh-private-key-for-ec2" {
-  default = "./SSTI_key.pem"
+  default = "./cr-SSTI-key-key_pair.pem"
 }

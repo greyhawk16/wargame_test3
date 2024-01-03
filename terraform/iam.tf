@@ -1,6 +1,6 @@
 # 공격자가 취득해야 하는 role
 resource "aws_iam_role" "secret_role" {
-  name               = "SSTI_secret_role"
+  name               = "cr-SSTI-secret_role-user_role"
   path               = "/"
   assume_role_policy = <<EOF
   {
@@ -19,7 +19,7 @@ resource "aws_iam_role" "secret_role" {
   EOF
 }
 
-# SSTI_secret_role에 붙일 policy
+# cr-SSTI-secret_role-user_role에 붙일 policy
 resource "aws_iam_role_policy_attachment" "secretsmanager_policy" {
   role   = aws_iam_role.secret_role.name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
