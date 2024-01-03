@@ -109,11 +109,11 @@ resource "aws_instance" "app_server" {
   }
 
   # Write ID of created EC2 instace to "instance_id.txt"
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${aws_instance.app_server.id}" > instance_id.txt
-    EOT
-  }
+  # provisioner "local-exec" {
+  #   command = <<-EOT
+  #     echo "${aws_instance.app_server.id}" > instance_id.txt
+  #   EOT
+  # }
   
   provisioner "remote-exec" {
     inline = [
