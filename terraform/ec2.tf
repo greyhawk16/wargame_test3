@@ -135,4 +135,11 @@ resource "aws_instance" "app_server" {
 # EIP
 resource "aws_eip" "elasticip" {
   instance = aws_instance.app_server.id
+
+  # write public ip-address to location.txt
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "${aws_eip.elasticip.public_ip}:5000" > location.txt
+    EOT
+  }
 }

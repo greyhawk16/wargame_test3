@@ -8,3 +8,4 @@ terraform/.terraform.lock.hcl
 code/__pycache__
 deprecated-key
 instance_id.txt
+location.txt
