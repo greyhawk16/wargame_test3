@@ -26,7 +26,7 @@ You start as an outsider. Exploit web application vulnerable to SSTI using rever
 
 ## Exploitation Route(s)
 
-![Alt text](./test.jpg)
+![Alt text](./SSTI_route.png)
 
 ## Route Walkthrough - Anonymous
 
