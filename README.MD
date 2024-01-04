@@ -38,4 +38,4 @@ You start as an outsider. Exploit web application vulnerable to SSTI using rever
 6. Enumerate through secrets managed by secretsmanager to find flag
 7. Get flag with flag's arn
 
-A cheat sheet for this route is available [here](./cheat_sheet.md).
+A cheat sheet for this route is available [here](./cheatsheet.md).
