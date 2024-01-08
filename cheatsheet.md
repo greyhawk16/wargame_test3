@@ -29,7 +29,7 @@
    - Look for role which contains  `secretsmanager`
 
     ```bash
-    aws iam list-attached-role-policcies --role-name name_of_role_you_want
+    aws iam list-attached-role-policies --role-name name_of_role_you_want
     ```
 6. Assume role
 
